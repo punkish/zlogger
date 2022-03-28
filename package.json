@@ -1,0 +1,23 @@
+{
+  "name": "zlogger",
+  "version": "1.0.0",
+  "description": "a very, very zimple logger",
+  "main": "index.js",
+  "repository": "https://github.com/punkish/zlogger",
+  "author": {
+      "name": "Puneet Kishor",
+      "email": "punk.kish@gmail.com",
+      "url": "https://punkish.org"
+  },
+  "license": "CC0-1.0",
+  "bugs": {
+    "url": "https://github.com/punkish/zlogger/issues"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "chalk": "^5.0.1"
+  },
+  "type": "module"
+}
