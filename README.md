@@ -1,6 +1,8 @@
 # zlogger
 *a realy zimple logger*
 
+There are a lot of wonderful loggers that do a lot of things. This is not one of them. This is a zero-dependency, 3.9KB (135 lines), synchronous logger, basically just a wrapper around `process.stdout.write`. It has loglevels and transports and can output log in color.
+
 1. import the logger class
     ```js
     import { Zlogger } from '../index.js';
