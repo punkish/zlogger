@@ -1,5 +1,5 @@
 {
-  "name": "zlogger",
+  "name": "@punkish/zlogger",
   "version": "1.0.0",
   "description": "a very, very zimple logger",
   "main": "index.js",
