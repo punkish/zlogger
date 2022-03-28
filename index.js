@@ -62,7 +62,7 @@ const write = (logger, msg, position, level) => {
         }
         else if (position === 'end') {
             if (logger.transports.includes('console')) {
-                console.log(str);
+                process.stdout.write(str);
             }
 
             if (logger.transports.includes('file')) {
