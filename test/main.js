@@ -5,13 +5,15 @@ const log = new Zlogger({
     transports: [ 'console', 'file' ] 
 });
 
-import { init } from './my-module.js';
-
 log.loglevel();
 log.info('foo');
 log.info('hello… ', 'start');
-log.info('done', 'end');
+log.info('done\n', 'end');
 log.warn('oops');
 log.error('uh oh!');
 
+import { init } from './my-module.js';
 init();
+
+import { bar } from './progress-bar.js';
+bar([...Array(15000).keys()]);

@@ -1,15 +1,15 @@
 import * as fs from 'fs';
 
 const colors = {
-    black: '\u001b[30m',
-    red: '\u001b[31m',
-    green: '\u001b[32m',
+    black : '\u001b[30m',
+    red   : '\u001b[31m',
+    green : '\u001b[32m',
     orange: '\u001b[33m',
-    blue: '\u001b[34m',
+    blue  : '\u001b[34m',
     purple: '\u001b[35m',
-    cyan: '\u001b[36m',
-    white: '\u001b[37m',
-    reset: '\u001b[39m'
+    cyan  : '\u001b[36m',
+    white : '\u001b[37m',
+    reset : '\u001b[39m'
 };
 
 // set the color, write the str, reset the color
@@ -82,8 +82,8 @@ const write = (logger, msg, pos, level) => {
             if (logger.transports.includes('file')) bleached();
         }
         else if (pos === 'end') {
-            if (logger.transports.includes('console')) process.stdout.write(`${str}\n`);
-            if (logger.transports.includes('file')) logger.stream.write(`${str}\n`);
+            if (logger.transports.includes('console')) process.stdout.write(`${str}`);
+            if (logger.transports.includes('file')) logger.stream.write(`${str}`);
         }
     }
     else {
@@ -107,9 +107,7 @@ class Zlogger {
         }
 
         if (this.logger.transports.includes('file')) {
-            const d = new Date();
-            const date = formatDate(d);
-
+            const date = formatDate(new Date());
             const basedir = dir || 'logs';
             const logdir = `${basedir}/${date}`;
 
@@ -118,13 +116,11 @@ class Zlogger {
             }
 
             const logfile = `${logdir}/${date}-${this.logger.level.toLowerCase()}.log`;
-
-            // https://stackoverflow.com/questions/3459476/how-to-append-to-a-file-in-node/43370201#43370201
-            this.logger.stream = fs.createWriteStream(logfile, { flags:'a' });
+            this.logger.stream = fs.createWriteStream(logfile, { flags: 'a' });
         }
     }
 
-    loglevel = () => console.log(`log level is ${this.logger.level}`);
+    loglevel = () => console.log(`${this.logger.name}: log level is ${this.logger.level}`);
     debug = (msg, pos) => prewrite(this.logger, msg, pos, 10);
     info  = (msg, pos) => prewrite(this.logger, msg, pos, 20);
     warn  = (msg, pos) => prewrite(this.logger, msg, pos, 30);
