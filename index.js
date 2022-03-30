@@ -46,13 +46,14 @@ const formatTime = (d) => {
 
 const formatDateTime = (d) => `${formatDate(d)} ${formatTime(d)}`;
 
+// convert level in string to number or
+// level in number to string
 const convert = (input) => {
     if (typeof(input) === 'number') {
         const keys = Object.keys(levels);
         const vals = Object.values(levels);
-        let level = keys[vals.indexOf(input)].toUpperCase();
 
-        return `— ${level}:`;
+        return keys[vals.indexOf(input)];
     }
 
     return levels[input];
@@ -62,16 +63,17 @@ const write = (logger, msg, pos, level) => {
     const d = new Date();
     const ts = formatDateTime(d);
     const str = typeof(msg) === 'object' ? JSON.stringify(msg) : msg;
-
+    const l = level.toLowerCase();
+    
     const bleached = (eol) => {
-        logger.stream.write(`${ts} ${logger.name} ${level} ${str}`);
-        if (eol) logger.stream.write('\n');
+        logger.streams[l].write(`${ts} ${logger.name} ${level} ${str}`);
+        if (eol) logger.streams[l].write('\n');
     }
 
     const colored = (eol) => {
         b(ts);
         r(logger.name);
-        g(level);
+        g(`– ${level}`);
         process.stdout.write(str);
         if (eol) console.log();
     }
@@ -83,7 +85,7 @@ const write = (logger, msg, pos, level) => {
         }
         else if (pos === 'end') {
             if (logger.transports.includes('console')) process.stdout.write(`${str}`);
-            if (logger.transports.includes('file')) logger.stream.write(`${str}`);
+            if (logger.transports.includes('file')) logger.streams[l].write(`${str}`);
         }
     }
     else {
@@ -115,8 +117,12 @@ class Zlogger {
                 fs.mkdirSync(logdir, { recursive: true });
             }
 
-            const logfile = `${logdir}/${date}-${this.logger.level.toLowerCase()}.log`;
-            this.logger.stream = fs.createWriteStream(logfile, { flags: 'a' });
+            this.logger.streams = {};
+            Object.keys(levels).forEach(level => {
+                const logfile = `${logdir}/${date}-${level.toLowerCase()}.log`;
+                const stream = fs.createWriteStream(logfile, { flags: 'a' });
+                this.logger.streams[level.toLowerCase()] = stream;
+            })
         }
     }
 
