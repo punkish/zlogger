@@ -7,13 +7,10 @@ const log = new Zlogger({
 
 log.loglevel();
 log.info('foo');
-log.info('hello… ', 'start');
-log.info('done\n', 'end');
+log.info('do something and wait… ', 'start');
+log.info('finished something\n', 'end');
 log.warn('oops');
 log.error('uh oh!');
 
 import { init } from './my-module.js';
 init();
-
-import { bar } from './progress-bar.js';
-bar([...Array(15000).keys()]);
