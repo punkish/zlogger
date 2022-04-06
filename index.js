@@ -29,7 +29,7 @@ const pad = (val) => val < 10 ? val.toString().padStart(2, '0') : val;
 
 const formatDate = (d) => {
     const yyyy = d.getUTCFullYear();
-    const mm = pad(d.getUTCMonth());
+    const mm = pad(d.getUTCMonth() + 1);
     const dd = pad(d.getUTCDate());
 
     return `${yyyy}-${mm}-${dd}`;
@@ -112,6 +112,7 @@ class Zlogger {
             const date = formatDate(new Date());
             const basedir = dir || 'logs';
             const logdir = `${basedir}/${date}`;
+            console.log(`logdir: ${logdir}`);
 
             if (!fs.existsSync(logdir)) {
                 fs.mkdirSync(logdir, { recursive: true });
