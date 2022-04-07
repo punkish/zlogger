@@ -112,7 +112,6 @@ class Zlogger {
             const date = formatDate(new Date());
             const basedir = dir || 'logs';
             const logdir = `${basedir}/${date}`;
-            console.log(`logdir: ${logdir}`);
 
             if (!fs.existsSync(logdir)) {
                 fs.mkdirSync(logdir, { recursive: true });
