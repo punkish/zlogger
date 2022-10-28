@@ -1,10 +1,11 @@
 import * as fs from 'fs';
+import process from 'node:process';
 
 const colors = {
     black : '\u001b[30m',
     red   : '\u001b[31m',
     green : '\u001b[32m',
-    orange: '\u001b[33m',
+    yellow: '\u001b[33m',
     blue  : '\u001b[34m',
     purple: '\u001b[35m',
     cyan  : '\u001b[36m',
@@ -23,22 +24,26 @@ const c = (str, color) => {
 const r = (str) => c(str, 'red');
 const g = (str) => c(str, 'green');
 const b = (str) => c(str, 'blue');
+const y = (str) => c(str, 'yellow');
 
-const levels = { DEBUG: 10, INFO: 20, WARN: 30, ERROR: 40, FATAL: 50 };
-const pad = (val) => val < 10 ? val.toString().padStart(2, '0') : val;
+const levels = { LEVEL: 0, DEBUG: 10, INFO: 20, WARN: 30, ERROR: 40, FATAL: 50 };
+
+const pad = (str, padLen, padStr) => str.length < padLen 
+    ? str.padStart(padLen, padStr) 
+    : str;
 
 const formatDate = (d) => {
     const yyyy = d.getUTCFullYear();
-    const mm = pad(d.getUTCMonth() + 1);
-    const dd = pad(d.getUTCDate());
+    const mm = pad((d.getUTCMonth() + 1), 2, '0');
+    const dd = pad(d.getUTCDate(), 2, '0');
 
     return `${yyyy}-${mm}-${dd}`;
 }
 
 const formatTime = (d) => {
-    const hh = pad(d.getUTCHours());
-    const mm = pad(d.getUTCMinutes());
-    const ss = pad(d.getUTCSeconds());
+    const hh = pad(d.getUTCHours(), 2, '0');
+    const mm = pad(d.getUTCMinutes(), 2, '0');
+    const ss = pad(d.getUTCSeconds(), 2, '0');
     const ms = d.getTime() % 1000;
 
     return `${hh}:${mm}:${ss}.${ms}`;
@@ -66,36 +71,57 @@ const write = (logger, msg, pos, level) => {
     const l = level.toLowerCase();
     
     const bleached = (eol) => {
-        logger.streams[l].write(`${ts} ${logger.name} ${level} ${str}`);
-        if (eol) logger.streams[l].write('\n');
+        logger.streams[l].write(`${ts} ${logger.name} ${pad(level, 5, ' ')} ${str}`);
+
+        if (eol) {
+            logger.streams[l].write('\n');
+        }
     }
 
     const colored = (eol) => {
         b(ts);
         r(logger.name);
-        g(`– ${level}`);
+        g(`– ${pad(level, 5, ' ')}`);
         process.stdout.write(str);
         if (eol) console.log();
     }
 
     if (pos) {
         if (pos === 'start') {
-            if (logger.transports.includes('console')) colored();
-            if (logger.transports.includes('file')) bleached();
+            if (logger.transports.includes('console')) {
+                colored();
+            }
+
+            if (logger.transports.includes('file')) {
+                bleached();
+            }
         }
         else if (pos === 'end') {
-            if (logger.transports.includes('console')) process.stdout.write(`${str}`);
-            if (logger.transports.includes('file')) logger.streams[l].write(`${str}`);
+            if (logger.transports.includes('console')) {
+                process.stdout.write(`${str}`);
+            }
+
+            if (logger.transports.includes('file')) {
+                logger.streams[l].write(`${str}`);
+            }
         }
     }
     else {
-        if (logger.transports.includes('console')) colored('\n');
-        if (logger.transports.includes('file')) bleached('\n');
+        if (logger.transports.includes('console')) {
+            colored('\n');
+        }
+
+        if (logger.transports.includes('file')) {
+            bleached('\n');
+        }
     }
 }
 
 const prewrite = (logger, msg, pos, level) => {
-    if (convert(logger.level) <= level) {
+    if (level === 0) {
+        write(logger, msg, pos, convert(level));
+    }
+    else if (convert(logger.level) <= level) {
         write(logger, msg, pos, convert(level));
     }
 }
@@ -118,6 +144,7 @@ class Zlogger {
             }
 
             this.logger.streams = {};
+
             Object.keys(levels).forEach(level => {
                 const logfile = `${logdir}/${date}-${level.toLowerCase()}.log`;
                 const stream = fs.createWriteStream(logfile, { flags: 'a' });
@@ -126,7 +153,7 @@ class Zlogger {
         }
     }
 
-    loglevel = () => console.log(`${this.logger.name}: log level is ${this.logger.level}`);
+    level = () => prewrite(this.logger, this.logger.level, '', 0);
     debug = (msg, pos) => prewrite(this.logger, msg, pos, 10);
     info  = (msg, pos) => prewrite(this.logger, msg, pos, 20);
     warn  = (msg, pos) => prewrite(this.logger, msg, pos, 30);

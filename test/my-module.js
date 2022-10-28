@@ -1,15 +1,21 @@
 import { Zlogger } from '../index.js';
+
 const log = new Zlogger({ 
-    name: 'MY-MODULE', 
-    level: 'error', 
+    name: 'MY MODULE', 
+    level: 'info', 
     transports: [ 'console', 'file' ] 
 });
 
-const init = () => {
-    log.loglevel();
-    log.warn('log a warning');
-    log.info('logging is simple');
-    log.error('this is an error');
+log.level();
+log.info('foo');
+log.info('do something and wait… ', 'start');
+log.info('finished something\n', 'end');
+
+for (let i = 0; i < 100; i++) {
+    log.info('.', 'end');
 }
 
-export { init }
+log.info(' DONE\n', 'end');
+
+log.warn('oops');
+log.error('uh oh!');

@@ -3,9 +3,9 @@
 
 There are a lot of wonderful loggers that do a lot of things. This is not one of them. This is a zero-dependency, 3.9KB (135 lines), synchronous logger, basically just a wrapper around `process.stdout.write`. It has loglevels and transports and can output log in color.
 
-1. import the logger class
+1. import the logger class. If your script is in a CommonJS format, rename it with `.mjs` extension.
     ```js
-    import { Zlogger } from '../index.js';
+    import { Zlogger } from '@punkish/zlogger';
     ```
 
 2. create a new logger with options
@@ -31,16 +31,17 @@ There are a lot of wonderful loggers that do a lot of things. This is not one of
         dir: 'path/to/logdir'
     });
     ```
+
 3. log away
     ```js
     log.loglevel();
     log.info('foo');
-    log.info('hello… ', 'start');
-    log.info('done', 'end');
+    log.info('hello… \n', 'start');
+    log.info('done\n', 'end');
     log.warn('oops');
     log.error('uh oh!');
     ```
-    The optional 'start' and 'end' position flags output the log message on the same line. In the example shown above, the output will be
+    The optional 'start' and 'end' position flags output the log message on the same line (in this case, you have to add the `\n` newline explicitly). In the example shown above, the output will be
     ```log
     log level is INFO
     2022-02-28 20:09:15.240 MAIN — INFO: foo
