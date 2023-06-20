@@ -2,7 +2,7 @@ import { Zlogger } from '../index.js';
 
 const log = new Zlogger({ 
     name: 'MY MODULE', 
-    level: 'info', 
+    level: 'error', 
     transports: [ 'console', 'file' ] 
 });
 
