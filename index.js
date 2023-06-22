@@ -113,10 +113,10 @@ const write = (logger, msg, pos, level) => {
 
     // convert logger.level from string to number so it can be compared
     const convertedLoggerLevel = convert(logger.level);
-
+    
     // we output a message if the message level is 0 or if the message level 
     // is less than or equal to the loggerLevel
-    if ((level === 0) || (level <= convertedLoggerLevel)) {
+    if ((level === 0) || (convertedLoggerLevel <= level)) {
         const obj = {
             logger,
             pos: pos || null,
