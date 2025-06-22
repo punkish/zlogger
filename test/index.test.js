@@ -1,5 +1,5 @@
-import tap from 'tap';
-import { formatDate, formatTime, formatDateTime, convert } from '../index.js';
+// import tap from 'tap';
+// import { formatDate, formatTime, formatDateTime, convert } from '../index.js';
 import Zlogger from '../index.js';
 
 // const d = new Date('2023-06-21');
@@ -10,7 +10,6 @@ import Zlogger from '../index.js';
 // tap.equal(convert(20), 'INFO', 'convert "20" to string');
 
 const log = new Zlogger({ 
-    name: 'MY MODULE', 
     level: 'info', 
     transports: [ 'console' ],
     // mode: 'streams' (default),
@@ -21,15 +20,15 @@ log.info(`logger level is ${log.level()}`);
 log.info('foo');
 log.info('do something and wait… ', 'start');
 log.info('finished something\n', 'end');
-
-log.info('no front matter ', 'end');
-
-// for (let i = 0; i < 50; i++) {
-//     log.info('.', 'end');
-// }
-
-// log.info(' DONE\n', 'end');
-
+log.info('no front matter\n', 'end');
 log.warn('oops');
 log.error('uh oh!');
 log.fatal('died');
+log.setLevel('error');
+log.info(`logger level is ${log.level()}`);
+log.info('foo');
+log.info('hello… ', 'start');
+log.info('done\n', 'end');
+log.warn('oops');
+log.error('log-level changed to "error" and above');
+log.fatal('died again');
