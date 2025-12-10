@@ -46,17 +46,22 @@ const formatTime = (d) => {
 const formatDateTime = (d) => `${formatDate(d)} ${formatTime(d)}`;
 
 const convert = (input) => {
-
-    // convert level from number to string, or
+    let i;
+    
+    // convert level from number to string
     if (typeof(input) === 'number') {
         const keys = Object.keys(levels);
         const vals = Object.values(levels);
 
-        return keys[vals.indexOf(input)];
+        i = keys[ vals.indexOf(input) ];
     }
 
     // convert level from string to number
-    return levels[ input.toUpperCase() ];
+    else {
+        i = levels[ input.toUpperCase() ];
+    }
+    
+    return i;
 }
 
 const bleached = ({ logger, pos, ts, str, level, eol }) => {
@@ -160,12 +165,13 @@ const write = (logger, prefix, msg, pos, level) => {
 }
 
 export default class Zlogger {
-    constructor({ level, transports, mode, dir, tsType }) {
+    constructor({ level, transports, mode, dir, tsType, snipPrefix }) {
         this.logger = {
             level     : level ? level.toUpperCase() : 'INFO',
             transports: transports          || [ 'console' ],
             mode      : mode                || 'streams',
-            tsType    : tsType              || 'timeonly'
+            tsType    : tsType              || 'timeonly',
+            snipPrefix: snipPrefix          || ''
         }
 
         if (this.logger.transports.includes('file')) {
@@ -200,11 +206,14 @@ export default class Zlogger {
         const relativeFileName = callee.getFileName()
             .replace('file://', '')
             .replace(process.cwd(), '')
-            .replace('/', '');
+            .replace('/', '')
+            .replace(this.logger.snipPrefix, '');
         
         const fnName = callee.getFunctionName() ?? '';
         const lineNum = callee.getLineNumber();
-        return `${relativeFileName}:${fnName}() [${lineNum}]`;
+        //return `${relativeFileName}:${fnName}() [${lineNum}]`;
+        const str = `${relativeFileName} [${lineNum}]`;
+        return str.padStart(26, ' ');
     }
 
     setLevel = (level) => this.logger.level = level;
